@@ -1,0 +1,57 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+.flattened-pom.xml
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+*.iml
+*.iws
+*.ipr
+
+# Build
+build/
+.gradle/
+*.class
+*.jar
+*.war
+*.ear
+
+# Logs
+logs/
+*.log
+
+# Spring Boot
+.m2/
+.env
+.env.local
+
+# Test coverage
+coverage/
+.jacoco/
+
+# Node (for future web UI)
+node_modules/
+dist/
+npm-debug.log
+
+# Kiro
+.kiro/
+
+# IntelliJ specific
+*.iml
+out/
+
+# Local database/credentials
+application-local.yml
+application-dev.yml

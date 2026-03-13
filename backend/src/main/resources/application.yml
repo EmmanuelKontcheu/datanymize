@@ -1,0 +1,120 @@
+spring:
+  application:
+    name: datanymize
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  datasource:
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 5000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  security:
+    user:
+      name: admin
+      password: admin
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+audit:
+  retention-days: 365
+  encryption-enabled: true
+  cleanup-schedule: "0 0 2 * * *"
+
+logging:
+  level:
+    root: INFO
+    com.datanymize: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/datanymize_dev
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    com.datanymize: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+server:
+  port: 8081
+
+logging:
+  level:
+    root: WARN
+    com.datanymize: INFO
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+  datasource:
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 10000
+
+server:
+  port: 8080
+  ssl:
+    enabled: true
+    key-store: classpath:keystore.p12
+    key-store-password: ${KEYSTORE_PASSWORD}
+    key-store-type: PKCS12
+
+logging:
+  level:
+    root: WARN
+    com.datanymize: INFO
+  file:
+    name: logs/datanymize.log
+    max-size: 10MB
+    max-history: 30

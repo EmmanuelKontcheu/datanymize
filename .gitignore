@@ -1,0 +1,36 @@
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Build artifacts
+/dist/
+/build/
+/target/
+*.class
+*.jar
+*.war
+
+# Dependencies
+/node_modules/
+/backend/target/
+/backend/.mvn/wrapper/maven-wrapper.jar
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Kiro (local development specs and configs)
+.kiro/
