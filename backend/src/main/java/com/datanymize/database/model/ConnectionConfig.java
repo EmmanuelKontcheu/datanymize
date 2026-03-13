@@ -37,4 +37,18 @@ public class ConnectionConfig {
      */
     @Builder.Default
     private int connectionTimeoutSeconds = 5;
+    
+    /**
+     * Get database type (alias for type field).
+     */
+    public String getDatabaseType() {
+        return this.type;
+    }
+    
+    /**
+     * Set database type (alias for type field).
+     */
+    public void setDatabaseType(String databaseType) {
+        this.type = databaseType;
+    }
 }

@@ -7,6 +7,7 @@ import com.datanymize.pii.model.PIICategory;
 import com.datanymize.pii.model.PIIClassification;
 import com.datanymize.pii.model.PIIScanResult;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -19,6 +20,7 @@ import java.util.*;
  */
 @Slf4j
 @Component
+@Primary
 public class AIBasedPIIDetector implements IPIIDetector {
     
     private final IAIProvider aiProvider;

@@ -1,6 +1,7 @@
 package com.datanymize.security;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -14,6 +15,7 @@ import java.util.Base64;
  * Validates Requirements: 14.1, 14.5
  */
 @Slf4j
+@Component
 public class CredentialEncryption {
     
     private static final String ALGORITHM = "AES";

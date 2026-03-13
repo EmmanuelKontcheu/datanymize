@@ -263,7 +263,7 @@ export class AnonymizationWizardComponent implements OnInit, OnDestroy {
         next: (response: any) => {
           this.connections = response.data || [];
         },
-        error: (err) => {
+        error: (err: any) => {
           this.error = 'Failed to load connections';
           console.error(err);
         }
@@ -277,7 +277,7 @@ export class AnonymizationWizardComponent implements OnInit, OnDestroy {
         next: (response: any) => {
           this.configurations = response.data || [];
         },
-        error: (err) => {
+        error: (err: any) => {
           this.error = 'Failed to load configurations';
           console.error(err);
         }
@@ -327,7 +327,7 @@ export class AnonymizationWizardComponent implements OnInit, OnDestroy {
             this.router.navigate(['/anonymization', jobId, 'progress']);
           }
         },
-        error: (err) => {
+        error: (err: any) => {
           this.isStarting = false;
           this.error = err.error?.message || 'Failed to start anonymization';
           console.error(err);

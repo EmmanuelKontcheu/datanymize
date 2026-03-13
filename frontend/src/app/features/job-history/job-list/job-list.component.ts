@@ -218,7 +218,7 @@ export class JobListComponent implements OnInit, OnDestroy {
           this.jobs = response.data || [];
           this.applyFilters();
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error('Failed to load jobs', err);
         }
       });

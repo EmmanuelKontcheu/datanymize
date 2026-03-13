@@ -211,7 +211,7 @@ export class ResultSummaryComponent implements OnInit, OnDestroy {
             this.warnings = response.data.warnings;
           }
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error('Failed to load results', err);
         }
       });

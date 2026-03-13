@@ -127,9 +127,9 @@ public class ReadOnlyValidator {
                     tenantId,
                     "READ_ONLY_VIOLATION",
                     "Connection",
-                    connectionId,
                     false,
-                    String.format("Attempted %s operation on read-only connection", operationType)
+                    String.format("Attempted %s operation on read-only connection", operationType),
+                    null
                 );
             }
         } catch (Exception e) {

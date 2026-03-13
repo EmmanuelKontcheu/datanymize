@@ -97,11 +97,11 @@ public class JwtTokenProvider {
      * Get all claims from token.
      */
     private Claims getAllClaimsFromToken(String token) {
-        return Jwts.parserBuilder()
-            .setSigningKey(getSigningKey())
+        return Jwts.parser()
+            .verifyWith(getSigningKey())
             .build()
-            .parseClaimsJws(token)
-            .getBody();
+            .parseSignedClaims(token)
+            .getPayload();
     }
     
     /**
@@ -121,10 +121,10 @@ public class JwtTokenProvider {
      */
     public Boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
+            Jwts.parser()
+                .verifyWith(getSigningKey())
                 .build()
-                .parseClaimsJws(token);
+                .parseSignedClaims(token);
             return !isTokenExpired(token);
         } catch (Exception e) {
             log.error("JWT token validation failed: {}", e.getMessage());

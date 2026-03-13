@@ -1,5 +1,7 @@
 package com.datanymize.export;
 
+import com.datanymize.export.model.ExportResult;
+
 /**
  * Interface for listening to export progress updates.
  * Validates: Requirements 7.1, 7.7

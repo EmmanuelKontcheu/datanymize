@@ -21,57 +21,71 @@ import { AuthService } from '../../../core/services/auth.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   template: `
-    <div class="min-h-screen bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center px-4">
-      <div class="w-full max-w-md">
+    <div style="min-height: 100vh; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); display: flex; align-items: center; justify-content: center; padding: 1rem;">
+      <div style="width: 100%; max-width: 420px;">
         <!-- Logo/Title -->
-        <div class="text-center mb-8">
-          <h1 class="text-4xl font-bold text-white mb-2">Datanymize</h1>
-          <p class="text-blue-100">Multi-Database Anonymization Platform</p>
+        <div style="text-align: center; margin-bottom: 3rem;">
+          <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: linear-gradient(135deg, #3b82f6 0%, #7c3aed 100%); border-radius: 12px; margin-bottom: 1rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
+            <svg style="width: 32px; height: 32px; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+            </svg>
+          </div>
+          <h1 style="font-size: 2rem; font-weight: bold; color: white; margin: 0.5rem 0;">Datanymize</h1>
+          <p style="color: #94a3b8; font-size: 1.125rem; margin: 0;">Multi-Database Anonymization Platform</p>
         </div>
 
         <!-- Login Card -->
-        <div class="bg-white rounded-lg shadow-xl p-8">
-          <h2 class="text-2xl font-bold text-gray-900 mb-6">Sign In</h2>
+        <div style="background: #1e293b; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); padding: 2rem; border: 1px solid #334155;">
+          <h2 style="font-size: 1.5rem; font-weight: bold; color: white; margin-bottom: 2rem;">Welcome Back</h2>
 
           <!-- Error Alert -->
-          <div *ngIf="error" class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p class="text-red-800 text-sm">{{ error }}</p>
+          <div *ngIf="error" style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <svg style="width: 20px; height: 20px; color: #fca5a5;" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+              </svg>
+              <p style="color: #fca5a5; font-size: 0.875rem;">{{ error }}</p>
+            </div>
           </div>
 
           <!-- Login Form -->
-          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" style="display: flex; flex-direction: column; gap: 1.25rem;">
             <!-- Email Field -->
-            <div class="mb-4">
-              <label for="username" class="block text-sm font-medium text-gray-700 mb-2">
+            <div>
+              <label for="username" style="display: block; font-size: 0.875rem; font-weight: 500; color: #cbd5e1; margin-bottom: 0.5rem;">
                 Email or Username
               </label>
               <input
                 id="username"
                 type="text"
                 formControlName="username"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                style="width: 100%; padding: 0.75rem 1rem; background: #334155; border: 1px solid #475569; border-radius: 8px; color: white; font-size: 1rem; outline: none; transition: all 0.2s;"
+                (focus)="$event.target.style.borderColor='#3b82f6'; $event.target.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'"
+                (blur)="$event.target.style.borderColor='#475569'; $event.target.style.boxShadow='none'"
                 placeholder="Enter your email or username"
                 [disabled]="loading"
               />
-              <p *ngIf="isFieldInvalid('username')" class="mt-1 text-sm text-red-600">
+              <p *ngIf="isFieldInvalid('username')" style="margin-top: 0.5rem; font-size: 0.875rem; color: #f87171;">
                 Username is required
               </p>
             </div>
 
             <!-- Password Field -->
-            <div class="mb-6">
-              <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+            <div>
+              <label for="password" style="display: block; font-size: 0.875rem; font-weight: 500; color: #cbd5e1; margin-bottom: 0.5rem;">
                 Password
               </label>
               <input
                 id="password"
                 type="password"
                 formControlName="password"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                style="width: 100%; padding: 0.75rem 1rem; background: #334155; border: 1px solid #475569; border-radius: 8px; color: white; font-size: 1rem; outline: none; transition: all 0.2s;"
+                (focus)="$event.target.style.borderColor='#3b82f6'; $event.target.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'"
+                (blur)="$event.target.style.borderColor='#475569'; $event.target.style.boxShadow='none'"
                 placeholder="Enter your password"
                 [disabled]="loading"
               />
-              <p *ngIf="isFieldInvalid('password')" class="mt-1 text-sm text-red-600">
+              <p *ngIf="isFieldInvalid('password')" style="margin-top: 0.5rem; font-size: 0.875rem; color: #f87171;">
                 Password is required
               </p>
             </div>
@@ -80,41 +94,60 @@ import { AuthService } from '../../../core/services/auth.service';
             <button
               type="submit"
               [disabled]="loading || loginForm.invalid"
-              class="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
+              style="margin-top: 2rem; padding: 0.75rem 1rem; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);"
+              [style.opacity]="loading || loginForm.invalid ? '0.5' : '1'"
+              [style.cursor]="loading || loginForm.invalid ? 'not-allowed' : 'pointer'"
+              (mouseenter)="!loading && loginForm.valid ? $event.target.style.boxShadow='0 20px 25px -5px rgba(37, 99, 235, 0.4)' : null"
+              (mouseleave)="$event.target.style.boxShadow='0 10px 15px -3px rgba(37, 99, 235, 0.3)'"
             >
-              <span *ngIf="!loading">Sign In</span>
-              <span *ngIf="loading" class="flex items-center justify-center">
-                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <span *ngIf="!loading" style="display: flex; align-items: center; justify-content: center;">
+                Sign In
+              </span>
+              <span *ngIf="loading" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <svg style="width: 20px; height: 20px; color: white; animation: spin 1s linear infinite;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle style="opacity: 0.25;" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path style="opacity: 0.75;" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
                 Signing in...
               </span>
             </button>
           </form>
 
+          <!-- Divider -->
+          <div style="position: relative; margin: 2rem 0;">
+            <div style="position: absolute; inset: 0; display: flex; align-items: center;">
+              <div style="width: 100%; border-top: 1px solid #475569;"></div>
+            </div>
+            <div style="position: relative; display: flex; justify-content: center; font-size: 0.875rem;">
+              <span style="padding: 0 0.5rem; background: #1e293b; color: #64748b;">Demo Credentials</span>
+            </div>
+          </div>
+
           <!-- Demo Credentials -->
-          <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <p class="text-sm text-gray-700 mb-2">
-              <strong>Demo Credentials:</strong>
-            </p>
-            <p class="text-sm text-gray-600">
-              Email: <code class="bg-white px-2 py-1 rounded">demo@datanymize.com</code>
-            </p>
-            <p class="text-sm text-gray-600">
-              Password: <code class="bg-white px-2 py-1 rounded">demo123</code>
-            </p>
+          <div style="display: flex; flex-direction: column; gap: 0.75rem; padding: 1rem; background: rgba(51, 65, 85, 0.5); border-radius: 8px; border: 1px solid #475569;">
+            <div>
+              <p style="font-size: 0.75rem; color: #64748b; margin-bottom: 0.25rem;">Email</p>
+              <code style="font-size: 0.875rem; color: #93c5fd; font-family: monospace;">demo&#64;datanymize.com</code>
+            </div>
+            <div>
+              <p style="font-size: 0.75rem; color: #64748b; margin-bottom: 0.25rem;">Password</p>
+              <code style="font-size: 0.875rem; color: #93c5fd; font-family: monospace;">demo123</code>
+            </div>
           </div>
         </div>
 
         <!-- Footer -->
-        <div class="text-center mt-6 text-blue-100">
-          <p class="text-sm">© 2024 Datanymize. All rights reserved.</p>
+        <div style="text-align: center; margin-top: 2rem;">
+          <p style="color: #64748b; font-size: 0.875rem;">© 2024 Datanymize. All rights reserved.</p>
         </div>
       </div>
     </div>
   `,
-  styles: []
+  styles: [`
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  `]
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;

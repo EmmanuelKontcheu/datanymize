@@ -2,6 +2,7 @@ package com.datanymize.config.validator;
 
 import com.datanymize.config.model.*;
 import com.datanymize.config.parser.ConfigurationParsingException;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
@@ -9,6 +10,7 @@ import java.util.*;
  * Validator for anonymization configurations.
  * Checks all constraints and validates configuration correctness.
  */
+@Service
 public class ConfigValidator {
     private final Set<String> builtInTransformers = Set.of(
         "fake_name", "fake_email", "fake_phone", "hash", "mask", 

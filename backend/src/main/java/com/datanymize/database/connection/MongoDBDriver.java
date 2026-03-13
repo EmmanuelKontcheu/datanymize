@@ -57,7 +57,7 @@ public class MongoDBDriver implements IDatabaseDriver {
         }
         
         // Set connection timeout
-        long timeoutMs = config.getConnectionTimeoutSeconds() * 1000L;
+        int timeoutMs = (int) (config.getConnectionTimeoutSeconds() * 1000L);
         settingsBuilder.applyToSocketSettings(builder ->
             builder.connectTimeout(timeoutMs, TimeUnit.MILLISECONDS)
                    .readTimeout(timeoutMs, TimeUnit.MILLISECONDS)

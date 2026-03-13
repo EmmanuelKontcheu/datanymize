@@ -1,7 +1,7 @@
 package com.datanymize.api.controller;
 
 import com.datanymize.api.dto.ApiResponse;
-import com.datanymize.audit.AuditLogEntry;
+import com.datanymize.audit.model.AuditLogEntry;
 import com.datanymize.audit.IAuditLogger;
 import com.datanymize.tenant.TenantContextHolder;
 import io.swagger.v3.oas.annotations.Operation;

@@ -20,7 +20,7 @@ public class TenantContextHolder {
      * 
      * @param tenantContext The tenant context to set
      */
-    public void setTenantContext(TenantContext tenantContext) {
+    public static void setTenantContext(TenantContext tenantContext) {
         if (tenantContext != null && !tenantContext.isValid()) {
             throw new IllegalArgumentException("Invalid tenant context");
         }
@@ -32,7 +32,7 @@ public class TenantContextHolder {
      * 
      * @return The current tenant context, or null if not set
      */
-    public TenantContext getTenantContext() {
+    public static TenantContext getTenantContext() {
         return TENANT_CONTEXT.get();
     }
     
@@ -41,7 +41,7 @@ public class TenantContextHolder {
      * 
      * @return The current tenant ID, or null if not set
      */
-    public String getCurrentTenantId() {
+    public static String getCurrentTenantId() {
         TenantContext context = TENANT_CONTEXT.get();
         return context != null ? context.getTenantId() : null;
     }
@@ -51,7 +51,7 @@ public class TenantContextHolder {
      * 
      * @return true if tenant context is set, false otherwise
      */
-    public boolean hasTenantContext() {
+    public static boolean hasTenantContext() {
         return TENANT_CONTEXT.get() != null;
     }
     
@@ -59,7 +59,7 @@ public class TenantContextHolder {
      * Clears the tenant context for the current thread.
      * Should be called in a finally block or filter cleanup.
      */
-    public void clear() {
+    public static void clear() {
         TENANT_CONTEXT.remove();
     }
 }

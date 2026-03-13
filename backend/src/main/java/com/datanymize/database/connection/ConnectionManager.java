@@ -4,6 +4,7 @@ import com.datanymize.database.model.ConnectionConfig;
 import com.datanymize.database.model.ConnectionResult;
 import com.datanymize.security.CredentialEncryption;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import java.util.concurrent.TimeoutException;
  * Validates Requirements: 1.6, 15.1, 15.2, 15.3
  */
 @Slf4j
+@Service
 public class ConnectionManager implements IConnectionManager {
     
     private final Map<String, IDatabaseDriver> drivers = new HashMap<>();
@@ -246,7 +248,9 @@ public class ConnectionManager implements IConnectionManager {
     @Override
     public boolean validateReadOnlyAccess(IDatabaseConnection connection) {
         try {
-            return ConnectionValidator.validateReadOnlyAccess(connection);
+            com.datanymize.database.model.ValidationResult result = 
+                ConnectionValidator.validateReadOnlyAccess(connection);
+            return result.isValid();
         } catch (Exception e) {
             log.error("Failed to validate read-only access", e);
             return false;

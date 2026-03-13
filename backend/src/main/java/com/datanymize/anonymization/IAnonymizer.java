@@ -1,7 +1,7 @@
 package com.datanymize.anonymization;
 
 import com.datanymize.config.model.AnonymizationConfig;
-import com.datanymize.database.model.IDatabaseConnection;
+import com.datanymize.database.connection.IDatabaseConnection;
 import com.datanymize.anonymization.model.AnonymizationResult;
 
 /**

@@ -1,130 +1,96 @@
 package com.datanymize.export.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Model representing the result of an export operation.
- * Validates: Requirements 7.1, 7.2, 7.3, 7.4
+ * Result of an export operation.
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ExportResult {
     private String exportId;
-    private ExportFormat format;
-    private boolean success;
+    private String exportFormat;
+    private String sourceDatabase;
+    private long totalRowsExported;
+    private long totalTablesExported;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private long duration;
-    private long rowsExported;
-    private long tablesExported;
-    private String outputPath;
-    private Map<String, Long> tableStats;
+    private String status;
     private String errorMessage;
+    private String exportPath;
+    private long exportSizeBytes;
+    private double successRate;
+    private Map<String, Long> tableStats = new HashMap<>();
+    private long duration;
 
-    public ExportResult() {
-        this.tableStats = new HashMap<>();
-        this.startTime = LocalDateTime.now();
-    }
-
-    public void markComplete() {
-        this.endTime = LocalDateTime.now();
-        this.duration = java.time.temporal.ChronoUnit.MILLIS.between(startTime, endTime);
-        this.success = true;
-    }
-
-    public void markFailed(String errorMessage) {
-        this.endTime = LocalDateTime.now();
-        this.duration = java.time.temporal.ChronoUnit.MILLIS.between(startTime, endTime);
-        this.success = false;
-        this.errorMessage = errorMessage;
-    }
-
-    // Getters and Setters
-    public String getExportId() {
-        return exportId;
-    }
-
-    public void setExportId(String exportId) {
-        this.exportId = exportId;
-    }
-
-    public ExportFormat getFormat() {
-        return format;
-    }
-
+    /**
+     * Set the export format from ExportFormat enum.
+     */
     public void setFormat(ExportFormat format) {
-        this.format = format;
+        if (format != null) {
+            this.exportFormat = format.toString();
+        }
     }
 
-    public boolean isSuccess() {
-        return success;
+    /**
+     * Set the output path.
+     */
+    public void setOutputPath(String path) {
+        this.exportPath = path;
     }
 
-    public void setSuccess(boolean success) {
-        this.success = success;
+    /**
+     * Set rows exported.
+     */
+    public void setRowsExported(long rows) {
+        this.totalRowsExported = rows;
     }
 
-    public LocalDateTime getStartTime() {
-        return startTime;
+    /**
+     * Set tables exported.
+     */
+    public void setTablesExported(int tables) {
+        this.totalTablesExported = tables;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
+    /**
+     * Mark export as complete.
+     */
+    public void markComplete() {
+        this.status = "COMPLETED";
+        this.endTime = LocalDateTime.now();
+        if (startTime != null) {
+            this.duration = java.time.temporal.ChronoUnit.MILLIS.between(startTime, endTime);
+        }
     }
 
-    public LocalDateTime getEndTime() {
-        return endTime;
+    /**
+     * Mark export as failed.
+     */
+    public void markFailed(String error) {
+        this.status = "FAILED";
+        this.errorMessage = error;
+        this.endTime = LocalDateTime.now();
+        if (startTime != null) {
+            this.duration = java.time.temporal.ChronoUnit.MILLIS.between(startTime, endTime);
+        }
     }
 
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
-
-    public long getDuration() {
-        return duration;
-    }
-
-    public void setDuration(long duration) {
-        this.duration = duration;
-    }
-
-    public long getRowsExported() {
-        return rowsExported;
-    }
-
-    public void setRowsExported(long rowsExported) {
-        this.rowsExported = rowsExported;
-    }
-
-    public long getTablesExported() {
-        return tablesExported;
-    }
-
-    public void setTablesExported(long tablesExported) {
-        this.tablesExported = tablesExported;
-    }
-
-    public String getOutputPath() {
-        return outputPath;
-    }
-
-    public void setOutputPath(String outputPath) {
-        this.outputPath = outputPath;
-    }
-
+    /**
+     * Get table statistics.
+     */
     public Map<String, Long> getTableStats() {
+        if (tableStats == null) {
+            tableStats = new HashMap<>();
+        }
         return tableStats;
-    }
-
-    public void setTableStats(Map<String, Long> tableStats) {
-        this.tableStats = tableStats;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
     }
 }

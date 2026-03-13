@@ -2,6 +2,7 @@ package com.datanymize.pii;
 
 import com.datanymize.database.connection.IDatabaseConnection;
 import com.datanymize.database.model.DatabaseMetadata;
+import com.datanymize.pii.model.PIICategory;
 import com.datanymize.pii.model.PIIClassification;
 import com.datanymize.pii.model.PIIScanResult;
 
@@ -57,5 +58,5 @@ public interface IPIIDetector {
      * @param value Value to analyze
      * @return PIICategory if pattern matches, NONE otherwise
      */
-    PIIClassification.PIICategory detectPattern(String value);
+    PIICategory detectPattern(String value);
 }

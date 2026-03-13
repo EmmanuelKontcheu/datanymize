@@ -260,16 +260,6 @@ public class ConnectionValidator {
             ValidationResult result = ValidationResult.success(ValidationResult.ValidationType.TIMEOUT, elapsedTime);
             return result;
             
-        } catch (TimeoutException e) {
-            long elapsedTime = System.currentTimeMillis() - startTime;
-            log.warn("Connection timeout: {}", e.getMessage());
-            return ValidationResult.failure(
-                ValidationResult.ValidationType.TIMEOUT,
-                "TIMEOUT_EXCEPTION",
-                "Connection validation timed out: " + e.getMessage(),
-                "Check network connectivity and increase timeout if needed",
-                elapsedTime
-            );
         } catch (Exception e) {
             long elapsedTime = System.currentTimeMillis() - startTime;
             if (elapsedTime > timeoutMillis) {

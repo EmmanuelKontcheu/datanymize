@@ -261,7 +261,7 @@ export class AuditLogViewerComponent implements OnInit, OnDestroy {
           this.logs = response.data || [];
           this.applyFilters();
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error('Failed to load audit logs', err);
         }
       });

@@ -1,5 +1,7 @@
 package com.datanymize.anonymization;
 
+import com.datanymize.anonymization.model.AnonymizationResult;
+
 /**
  * Listener for anonymization progress updates.
  */

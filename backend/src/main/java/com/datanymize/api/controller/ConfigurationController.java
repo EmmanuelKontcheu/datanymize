@@ -70,11 +70,12 @@ public class ConfigurationController {
             AnonymizationConfig config = parser.parse(request.getContent());
             
             // Validate configuration
-            var validationResult = configValidator.validate(config);
-            if (!validationResult.isValid()) {
+            try {
+                configValidator.validate(config);
+            } catch (Exception e) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ApiResponse.error(
-                        "Configuration validation failed: " + validationResult.getErrors(),
+                        "Configuration validation failed: " + e.getMessage(),
                         "CONFIG_VALIDATION_FAILED",
                         400
                     ));
@@ -89,7 +90,7 @@ public class ConfigurationController {
             
             ConfigurationResponse response = ConfigurationResponse.builder()
                 .id(configId)
-                .version(1)
+                .version(configVersionManager.getLatestVersionNumber(configId))
                 .format(request.getFormat())
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -125,7 +126,7 @@ public class ConfigurationController {
             
             ConfigurationDetailResponse response = ConfigurationDetailResponse.builder()
                 .id(id)
-                .version(configVersionManager.getLatestVersion(id))
+                .version(configVersionManager.getLatestVersionNumber(id))
                 .content(config.toString())
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -169,11 +170,12 @@ public class ConfigurationController {
             newConfig.setId(id);
             
             // Validate new configuration
-            var validationResult = configValidator.validate(newConfig);
-            if (!validationResult.isValid()) {
+            try {
+                configValidator.validate(newConfig);
+            } catch (Exception e) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ApiResponse.error(
-                        "Configuration validation failed: " + validationResult.getErrors(),
+                        "Configuration validation failed: " + e.getMessage(),
                         "CONFIG_VALIDATION_FAILED",
                         400
                     ));
@@ -181,7 +183,7 @@ public class ConfigurationController {
             
             // Save new version
             configVersionManager.saveConfiguration(id, newConfig);
-            int newVersion = configVersionManager.getLatestVersion(id);
+            int newVersion = configVersionManager.getLatestVersionNumber(id);
             
             ConfigurationResponse response = ConfigurationResponse.builder()
                 .id(id)
@@ -220,10 +222,11 @@ public class ConfigurationController {
             
             List<ConfigVersionResponse> responses = new ArrayList<>();
             for (ConfigVersion version : versions) {
+                String changesStr = version.getChanges() != null ? version.getChanges().toString() : "";
                 responses.add(ConfigVersionResponse.builder()
                     .versionNumber(version.getVersionNumber())
-                    .timestamp(version.getTimestamp())
-                    .changes(version.getChanges())
+                    .timestamp(version.getCreatedAt())
+                    .changes(changesStr)
                     .build());
             }
             
@@ -257,7 +260,7 @@ public class ConfigurationController {
                     .body(ApiResponse.error("Version not found", "VERSION_NOT_FOUND", 404));
             }
             
-            int newVersion = configVersionManager.getLatestVersion(id);
+            int newVersion = configVersionManager.getLatestVersionNumber(id);
             
             ConfigurationResponse response = ConfigurationResponse.builder()
                 .id(id)

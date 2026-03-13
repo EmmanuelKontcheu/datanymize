@@ -265,7 +265,8 @@ public class MySQLSchemaExtractor implements IDatabaseSchemaExtractor {
         try (Statement stmt = underlyingConn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
             
-            Map<String, DatabaseMetadata.IndexMetadata.IndexMetadataBuilder> indexBuilders = new LinkedHashMap<>();
+            Map<String, List<String>> indexColumns = new LinkedHashMap<>();
+            Map<String, Boolean> indexUnique = new LinkedHashMap<>();
             
             while (rs.next()) {
                 String indexName = rs.getString("INDEX_NAME");
@@ -275,18 +276,24 @@ public class MySQLSchemaExtractor implements IDatabaseSchemaExtractor {
                 
                 String indexKey = tableName + "." + indexName;
                 
-                indexBuilders.computeIfAbsent(indexKey, k -> 
-                    DatabaseMetadata.IndexMetadata.builder()
-                        .name(indexName)
-                        .tableName(tableName)
-                        .columns(new ArrayList<>())
-                        .unique(unique)
-                ).columns.add(columnName);
+                indexColumns.computeIfAbsent(indexKey, k -> new ArrayList<>()).add(columnName);
+                indexUnique.put(indexKey, unique);
             }
             
             // Build final index list
-            for (DatabaseMetadata.IndexMetadata.IndexMetadataBuilder builder : indexBuilders.values()) {
-                indices.add(builder.build());
+            for (Map.Entry<String, List<String>> entry : indexColumns.entrySet()) {
+                String[] parts = entry.getKey().split("\\.");
+                String tableName = parts[0];
+                String indexName = parts[1];
+                
+                DatabaseMetadata.IndexMetadata index = DatabaseMetadata.IndexMetadata.builder()
+                    .name(indexName)
+                    .tableName(tableName)
+                    .columns(entry.getValue())
+                    .unique(indexUnique.get(entry.getKey()))
+                    .build();
+                
+                indices.add(index);
             }
         }
         

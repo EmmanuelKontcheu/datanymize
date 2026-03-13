@@ -58,9 +58,9 @@ public class TenantDeletionService {
                 tenantId,
                 "TENANT_DELETION_INITIATED",
                 "Tenant",
-                tenantId,
                 true,
-                "Tenant deletion process initiated"
+                null,
+                null
             );
             
             // Delete all tenant data
@@ -80,9 +80,9 @@ public class TenantDeletionService {
                 tenantId,
                 "TENANT_DELETION_COMPLETED",
                 "Tenant",
-                tenantId,
                 true,
-                "Tenant deletion completed successfully"
+                null,
+                null
             );
             
         } catch (Exception e) {
@@ -93,9 +93,9 @@ public class TenantDeletionService {
                     tenantId,
                     "TENANT_DELETION_FAILED",
                     "Tenant",
-                    tenantId,
                     false,
-                    "Tenant deletion failed: " + e.getMessage()
+                    e.getMessage(),
+                    null
                 );
             } catch (Exception auditError) {
                 logger.error("Failed to log tenant deletion failure", auditError);

@@ -68,8 +68,11 @@ public class SubsetForeignKeyResolver {
             return row;
         }
 
-        Row resolvedRow = new Row(row.getTableName());
-        resolvedRow.setValues(new HashMap<>(row.getValues()));
+        Row resolvedRow = Row.builder()
+            .tableName(row.getTableName())
+            .values(new HashMap<>(row.getValues()))
+            .originalValues(new HashMap<>(row.getOriginalValues()))
+            .build();
 
         for (ForeignKey fk : foreignKeys) {
             if (!fk.getSourceTable().equals(row.getTableName())) {

@@ -1,6 +1,7 @@
 package com.datanymize.config.versioning;
 
 import com.datanymize.config.model.AnonymizationConfig;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
@@ -8,6 +9,7 @@ import java.util.*;
  * Manages configuration versioning.
  * Tracks configuration changes and allows restoration to previous versions.
  */
+@Service
 public class ConfigVersionManager {
     private final Map<String, List<ConfigVersion>> configVersions = new HashMap<>();
     private final Map<String, Integer> versionCounters = new HashMap<>();
@@ -154,5 +156,67 @@ public class ConfigVersionManager {
     public int getVersionCount(String configId) {
         List<ConfigVersion> versions = configVersions.get(configId);
         return versions == null ? 0 : versions.size();
+    }
+
+    /**
+     * Save a configuration (creates a new version).
+     * @param configId Configuration ID
+     * @param config Configuration to save
+     */
+    public void saveConfiguration(String configId, AnonymizationConfig config) {
+        createVersion(configId, config, "system");
+    }
+
+    /**
+     * Get the latest configuration.
+     * @param configId Configuration ID
+     * @return Latest AnonymizationConfig or null if not found
+     */
+    public AnonymizationConfig getLatestConfiguration(String configId) {
+        ConfigVersion latest = getLatestVersion(configId);
+        return latest != null ? latest.getConfig() : null;
+    }
+
+    /**
+     * Get the latest version number.
+     * @param configId Configuration ID
+     * @return Latest version number or 0 if no versions exist
+     */
+    public int getLatestVersionNumber(String configId) {
+        ConfigVersion latest = getLatestVersion(configId);
+        return latest != null ? latest.getVersionNumber() : 0;
+    }
+
+    /**
+     * Get configuration history (alias for getVersionHistory).
+     * @param configId Configuration ID
+     * @return List of ConfigVersions
+     */
+    public List<ConfigVersion> getConfigurationHistory(String configId) {
+        return getVersionHistory(configId);
+    }
+
+    /**
+     * Restore a configuration to a previous version.
+     * @param configId Configuration ID
+     * @param versionNumber Version number to restore
+     * @return Restored AnonymizationConfig or null if version not found
+     */
+    public AnonymizationConfig restoreVersion(String configId, int versionNumber) {
+        ConfigVersion version = getVersion(configId, versionNumber);
+        if (version == null) {
+            return null;
+        }
+        
+        // Create a new version with the restored config
+        AnonymizationConfig restoredConfig = new AnonymizationConfig();
+        restoredConfig.setId(version.getConfig().getId());
+        restoredConfig.setTables(new HashMap<>(version.getConfig().getTables()));
+        restoredConfig.setTransformers(new HashMap<>(version.getConfig().getTransformers()));
+        restoredConfig.setSubset(version.getConfig().getSubset());
+        restoredConfig.setReferentialIntegrity(version.getConfig().getReferentialIntegrity());
+        
+        createVersion(configId, restoredConfig, "system");
+        return restoredConfig;
     }
 }

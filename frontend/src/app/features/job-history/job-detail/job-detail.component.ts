@@ -141,12 +141,12 @@ import { ApiService } from '../../../core/services/api.service';
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let stat of job.tableStats" class="border-t">
-                  <td class="px-4 py-2 text-gray-900">{{ stat.tableName }}</td>
-                  <td class="px-4 py-2 text-right text-gray-600">{{ formatNumber(stat.rowsProcessed) }}</td>
+                <tr *ngFor="let stat of (job?.tableStats || [])" class="border-t">
+                  <td class="px-4 py-2 text-gray-900">{{ stat?.tableName || 'N/A' }}</td>
+                  <td class="px-4 py-2 text-right text-gray-600">{{ formatNumber(stat?.rowsProcessed || 0) }}</td>
                   <td class="px-4 py-2 text-right">
-                    <span [class]="'inline-block px-2 py-1 rounded text-xs font-medium ' + getTableStatusClass(stat.status)">
-                      {{ stat.status }}
+                    <span [class]="'inline-block px-2 py-1 rounded text-xs font-medium ' + getTableStatusClass(stat?.status || 'PENDING')">
+                      {{ stat?.status || 'PENDING' }}
                     </span>
                   </td>
                 </tr>
@@ -242,7 +242,7 @@ export class JobDetailComponent implements OnInit, OnDestroy {
         next: (response: any) => {
           this.job = response.data || this.job;
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error('Failed to load job details', err);
         }
       });
@@ -258,7 +258,7 @@ export class JobDetailComponent implements OnInit, OnDestroy {
     const request = {
       sourceConnectionId: this.job.sourceConnectionId,
       targetConnectionId: this.job.targetConnectionId,
-      configurationId: this.job.configuration['id'] || ''
+      configurationId: (this.job.configuration as any)['id'] || ''
     };
 
     this.apiService.post('/anonymizations', request)
@@ -270,7 +270,7 @@ export class JobDetailComponent implements OnInit, OnDestroy {
             this.router.navigate(['/anonymization', jobId, 'progress']);
           }
         },
-        error: (err) => {
+        error: (err: any) => {
           this.isRetrying = false;
           console.error('Failed to retry job', err);
         }

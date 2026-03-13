@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
  * Configuration for referential integrity handling during anonymization.
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ReferentialIntegrityConfig {

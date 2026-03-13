@@ -213,7 +213,7 @@ export class ProgressMonitorComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe({
-        error: (err) => {
+        error: (err: any) => {
           console.error('Failed to fetch progress', err);
         }
       });
@@ -234,7 +234,7 @@ export class ProgressMonitorComponent implements OnInit, OnDestroy {
         next: (response: any) => {
           this.updateProgress(response.data);
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error('Failed to load progress', err);
         }
       });
@@ -271,7 +271,7 @@ export class ProgressMonitorComponent implements OnInit, OnDestroy {
           this.showCancelConfirmation = false;
           this.progress.status = 'CANCELLED';
         },
-        error: (err) => {
+        error: (err: any) => {
           this.isCancelling = false;
           console.error('Failed to cancel anonymization', err);
         }

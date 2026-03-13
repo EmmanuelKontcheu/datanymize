@@ -4,16 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
  * Result of an anonymization operation.
- * Contains statistics and status information.
  */
 @Data
 @NoArgsConstructor
@@ -21,54 +17,33 @@ import java.util.Map;
 @Builder
 public class AnonymizationResult {
     private String anonymizationId;
-    private boolean success;
-    private long rowsProcessed;
-    private long rowsSkipped;
-    private long duration;
+    private String sourceDatabase;
+    private String targetDatabase;
+    private long totalRowsProcessed;
+    private long totalRowsSkipped;
+    private long totalErrors;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private List<String> errors;
-    private Map<String, Long> tableStats;
-    private String status;  // PENDING, IN_PROGRESS, COMPLETED, FAILED, CANCELLED
+    private String status;
+    private String errorMessage;
+    private Map<String, Long> tableStatistics;
+    private double successRate;
+    private long duration;
 
-    public AnonymizationResult(String anonymizationId) {
-        this.anonymizationId = anonymizationId;
-        this.success = false;
-        this.rowsProcessed = 0;
-        this.rowsSkipped = 0;
-        this.duration = 0;
-        this.errors = new ArrayList<>();
-        this.tableStats = new HashMap<>();
-        this.status = "PENDING";
-        this.startTime = LocalDateTime.now();
+    /**
+     * Increment rows processed counter.
+     */
+    public void incrementRowsProcessed(long count) {
+        this.totalRowsProcessed += count;
     }
 
-    public void addError(String error) {
-        this.errors.add(error);
-    }
-
-    public void recordTableStats(String tableName, long rowCount) {
-        this.tableStats.put(tableName, rowCount);
-    }
-
-    public void markCompleted() {
-        this.endTime = LocalDateTime.now();
-        this.duration = java.time.temporal.ChronoUnit.MILLIS.between(startTime, endTime);
-        this.status = "COMPLETED";
-        this.success = errors.isEmpty();
-    }
-
-    public void markFailed() {
-        this.endTime = LocalDateTime.now();
-        this.duration = java.time.temporal.ChronoUnit.MILLIS.between(startTime, endTime);
-        this.status = "FAILED";
-        this.success = false;
-    }
-
-    public void markCancelled() {
-        this.endTime = LocalDateTime.now();
-        this.duration = java.time.temporal.ChronoUnit.MILLIS.between(startTime, endTime);
-        this.status = "CANCELLED";
-        this.success = false;
+    /**
+     * Add table statistics.
+     */
+    public void addTableStatistic(String tableName, long rowCount) {
+        if (tableStatistics == null) {
+            tableStatistics = new HashMap<>();
+        }
+        tableStatistics.put(tableName, rowCount);
     }
 }

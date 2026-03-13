@@ -73,33 +73,23 @@ IF "%MAVEN_PROJECTBASEDIR%"=="" (
 set MAVEN_PROJECTBASEDIR=%CD%
 )
 
-set WRAPPER_JAR="%MAVEN_PROJECTBASEDIR%\.mvn\wrapper\maven-wrapper.jar"
+set WRAPPER_JAR=%MAVEN_PROJECTBASEDIR%\.mvn\wrapper\maven-wrapper.jar
 set WRAPPER_LAUNCHER=org.apache.maven.wrapper.MavenWrapperMain
 
 set DOWNLOAD_URL="https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.2.0/maven-wrapper-3.2.0.jar"
 
 FOR /F "usebackq tokens=1,2 delims==" %%A IN ("%MAVEN_PROJECTBASEDIR%\.mvn\wrapper\maven-wrapper.properties") DO (
     if "%%A"=="distributionUrl" set DOWNLOAD_URL=%%B
+    if "%%A"=="wrapperUrl" set WRAPPER_JAR_URL=%%B
 )
 
-@REM This goes in the command line:
-@REM for /f "usebackq tokens=1,2 delims==" %%A in ("%MAVEN_PROJECTBASEDIR%\.mvn\wrapper\maven-wrapper.properties") do (
-@REM     if "%%A"=="distributionUrl" (
-@REM         set DOWNLOAD_URL=%%B
-@REM     )
-@REM )
+@setlocal enabledelayedexpansion
+if not "%WRAPPER_JAR_URL%"=="" (
+    set WRAPPER_JAR=%WRAPPER_JAR_URL%
+)
+@endlocal
 
-@REM if not "%DOWNLOAD_URL%"=="" (
-@REM     powershell -Command "&{"^
-@REM         "$webclient = new-object System.Net.WebClient;"^
-@REM         "if (-not ([string]::IsNullOrEmpty('%MVNW_USERNAME%') -and [string]::IsNullOrEmpty('%MVNW_PASSWORD%'))) {"^
-@REM         "$webclient.Credentials = new-object System.Net.NetworkCredential('%MVNW_USERNAME%', '%MVNW_PASSWORD%');"^
-@REM         "}"^
-@REM         "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $webclient.DownloadFile('%DOWNLOAD_URL%', '%WRAPPER_JAR%')"^
-@REM         "}"
-@REM     echo Finished downloading %WRAPPER_JAR%
-@REM )
-if exist "%WRAPPER_JAR%" (
+if exist %WRAPPER_JAR% (
     if "%MVNW_VERBOSE%" == "true" (
         echo Found %WRAPPER_JAR%
     )
@@ -121,101 +111,49 @@ if exist "%WRAPPER_JAR%" (
 		"}"
     if "%ERRORLEVEL%" == "0" (
         if "%MVNW_VERBOSE%" == "true" (
-            echo Finished downloading %WRAPPER_JAR%
+            echo Successfully downloaded %WRAPPER_JAR%
         )
     ) else (
+        echo.
         echo Error downloading %WRAPPER_JAR%
-        exit /b 1
+        echo.
+        goto error
     )
 )
-@REM End of extension
-
-@REM If specified, validate the SHA-256 sum of the Maven wrapper jar
-set WRAPPER_SHA_256_SUM=""
-FOR /F "usebackq tokens=1,2 delims==" %%A IN ("%MAVEN_PROJECTBASEDIR%\.mvn\wrapper\maven-wrapper.properties") DO (
-    if "%%A"=="wrapperSha256Sum" set WRAPPER_SHA_256_SUM=%%B
-)
-if not %WRAPPER_SHA_256_SUM%=="" (
-    powershell -Command "&{"^
-       "$hash = (Get-FileHash '%WRAPPER_JAR%' -Algorithm SHA256).Hash.ToLower();"^
-       "if ('%WRAPPER_SHA_256_SUM%' -ne $hash) {"^
-           "Write-Output 'Error: Failed to validate Maven wrapper SHA-256, your Maven wrapper might be compromised.'"^
-           "Write-Output 'Investigate or delete %WRAPPER_JAR% to attempt a clean download.'"^
-           "Write-Output 'If you updated your Maven version, please update the specified wrapperSha256Sum property.'"^
-           "exit 1"^
-       "}"^
-       "}"
-    if "%ERRORLEVEL%" == "0" (
-        if "%MVNW_VERBOSE%" == "true" (
-            echo Validated Maven wrapper SHA-256
-        )
-    ) else (
-        exit /b 1
-    )
-)
-
-@REM Provide a "standardized" way to retrieve the CLI args that will
-@REM work with both Windows and non-Windows executions.
-if "%OS%"=="Windows_NT" (
-  set "APP_HOME=%~dp0"
-) else (
-  set "APP_HOME=`pwd`"
-)
-
-@REM Add default JVM options here. You can also use MAVEN_OPTS to pass JVM options to this script.
-set DEFAULT_JVM_OPTS="-Xmx1024m" "-Xms1024m"
-
-@REM Find java.exe
-if defined JAVA_HOME goto findJavaFromJavaHome
-
-set JAVA_EXE=java.exe
-%JAVA_EXE% -version >NUL 2>&1
-if "%ERRORLEVEL%" == "0" goto execute
-
-echo.
-echo ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.
-echo.
-echo Please set the JAVA_HOME variable in your environment to match the
-echo location of your Java installation.
-
-goto fail
-
-:findJavaFromJavaHome
-set JAVA_HOME=%JAVA_HOME:"=%
-set JAVA_EXE=%JAVA_HOME%\bin\java.exe
-
-if exist "%JAVA_EXE%" goto execute
-
-echo.
-echo ERROR: JAVA_HOME is set to an invalid directory: %JAVA_HOME%
-echo.
-echo Please set the JAVA_HOME variable in your environment to match the
-echo location of your Java installation.
-
-goto fail
-
-:execute
-@REM Increase the default stack size if needed
-if "%MAVEN_OPTS%" == "" set MAVEN_OPTS=%DEFAULT_JVM_OPTS%
-
 @setlocal enabledelayedexpansion
-for /F "usebackq delims=" %%a in ("%MAVEN_PROJECTBASEDIR%\.mvn\jvm.config") do set "JVM_CONFIG_MAVEN_PROPS=!JVM_CONFIG_MAVEN_PROPS! %%a"
-@endlocal & set JVM_CONFIG_MAVEN_PROPS=%JVM_CONFIG_MAVEN_PROPS%
+@endlocal
 
-"%JAVA_EXE%" %JVM_CONFIG_MAVEN_PROPS% %MAVEN_OPTS% %MAVEN_DEBUG_OPTS% -classpath %WRAPPER_JAR% "-Dmaven.multiModuleProjectDirectory=%MAVEN_PROJECTBASEDIR%" %WRAPPER_LAUNCHER% %MAVEN_CONFIG% %*
-if "%ERRORLEVEL%"=="0" goto mainEnd
+if exist "%MAVEN_PROJECTBASEDIR%\mavenrc_pre.bat" call "%MAVEN_PROJECTBASEDIR%\mavenrc_pre.bat" %*
+if exist "%USERPROFILE%\mavenrc_pre.bat" call "%USERPROFILE%\mavenrc_pre.bat" %*
 
-:fail
-rem Set variable MAVEN_EXIT_ERROR_CODE if you want to exit with a different code than 1
-if not "%MAVEN_EXIT_ERROR_CODE%"=="" (
-  set "EXIT_CODE=%MAVEN_EXIT_ERROR_CODE%"
-) else (
-  set "EXIT_CODE=1"
-)
+@setlocal
+
+set MAVEN_JAVA_EXE="%JAVA_HOME%\bin\java.exe"
+
+set CLASSPATH=%WRAPPER_JAR%
+
+set WRAPPER_LAUNCHER=org.apache.maven.wrapper.MavenWrapperMain
+
+%MAVEN_JAVA_EXE% ^
+  %MAVEN_OPTS% ^
+  %MAVEN_DEBUG_OPTS% ^
+  -classpath %CLASSPATH% ^
+  %WRAPPER_LAUNCHER% %MAVEN_CONFIG% %*
+
+if ERRORLEVEL 1 goto error
+goto end
+
+:error
+set ERROR_CODE=1
+
+:end
+@endlocal & set ERROR_CODE=%ERROR_CODE%
 
 if not "%MAVEN_SKIP_RC%"=="" goto skipRcPost
-@REM check for post script, e.g. mavenrc_post.bat
-if exist "%MAVEN_PROJECTBASEDIR%\mavenrc_post.bat" call "%MAVEN_PROJECTBASEDIR%\mavenrc_post.bat"
+@setlocal
+for /F "usebackq delims=" %%F in ("%MAVEN_PROJECTBASEDIR%\mavenrc_post.bat") do @call "%%F" %*
+@endlocal
 :skipRcPost
 
-@endlocal & exit /b %EXIT_CODE%
+@endlocal
+exit /B %ERROR_CODE%

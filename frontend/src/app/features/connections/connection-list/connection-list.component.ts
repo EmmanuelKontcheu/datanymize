@@ -125,7 +125,7 @@ import { ApiService } from '../../../core/services/api.service';
               <tr *ngFor="let connection of filteredConnections" class="hover:bg-gray-50 transition">
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="text-sm font-medium text-gray-900">{{ connection.database }}</div>
-                  <div class="text-sm text-gray-500">{{ connection.username }}@{{ connection.host }}</div>
+                  <div class="text-sm text-gray-500">{{ connection.username }}&#64;{{ connection.host }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full" [ngClass]="getDatabaseTypeClass(connection.databaseType)">
@@ -187,7 +187,7 @@ export class ConnectionListComponent implements OnInit {
           this.applyFilters();
         }
       },
-      error: (error) => {
+      error: (error: any) => {
         this.loading = false;
         this.error = error.error?.message || 'Failed to load connections';
       }
@@ -212,7 +212,7 @@ export class ConnectionListComponent implements OnInit {
         next: () => {
           this.loadConnections();
         },
-        error: (error) => {
+        error: (error: any) => {
           this.error = error.error?.message || 'Failed to delete connection';
         }
       });

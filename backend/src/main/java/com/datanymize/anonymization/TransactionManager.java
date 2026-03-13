@@ -1,6 +1,6 @@
 package com.datanymize.anonymization;
 
-import com.datanymize.database.model.IDatabaseConnection;
+import com.datanymize.database.connection.IDatabaseConnection;
 
 import java.util.*;
 
@@ -23,8 +23,12 @@ public class TransactionManager {
      */
     public void beginTransaction() {
         if (!inTransaction) {
-            connection.beginTransaction();
-            inTransaction = true;
+            try {
+                connection.beginTransaction();
+                inTransaction = true;
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to begin transaction: " + e.getMessage(), e);
+            }
         }
     }
 
@@ -33,9 +37,13 @@ public class TransactionManager {
      */
     public void commit() {
         if (inTransaction) {
-            connection.commit();
-            inTransaction = false;
-            savepoints.clear();
+            try {
+                connection.commit();
+                inTransaction = false;
+                savepoints.clear();
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to commit transaction: " + e.getMessage(), e);
+            }
         }
     }
 
@@ -44,9 +52,13 @@ public class TransactionManager {
      */
     public void rollback() {
         if (inTransaction) {
-            connection.rollback();
-            inTransaction = false;
-            savepoints.clear();
+            try {
+                connection.rollback();
+                inTransaction = false;
+                savepoints.clear();
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to rollback transaction: " + e.getMessage(), e);
+            }
         }
     }
 
@@ -85,6 +97,8 @@ public class TransactionManager {
      * @return Stack of savepoint names
      */
     public Stack<String> getSavepoints() {
-        return new Stack<>(savepoints);
+        Stack<String> copy = new Stack<>();
+        copy.addAll(savepoints);
+        return copy;
     }
 }
