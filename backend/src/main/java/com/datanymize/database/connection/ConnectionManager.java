@@ -45,10 +45,27 @@ public class ConnectionManager implements IConnectionManager {
     public ConnectionResult testConnection(ConnectionConfig config) {
         try {
             // Validate configuration
-            ConnectionValidator.validateConfiguration(config);
+            com.datanymize.database.model.ValidationResult configValidation = 
+                ConnectionValidator.validateConfiguration(config);
+            
+            if (!configValidation.isValid()) {
+                return ConnectionResult.builder()
+                    .success(false)
+                    .errorMessage(configValidation.getErrorMessage())
+                    .errorCode(configValidation.getErrorCode())
+                    .errorDetails(configValidation.getSuggestion())
+                    .durationMs(configValidation.getDurationMs())
+                    .build();
+            }
             
             // Validate TLS/SSL configuration
-            ConnectionValidator.validateTLSConfiguration(config);
+            com.datanymize.database.model.ValidationResult tlsValidation = 
+                ConnectionValidator.validateTLSConfiguration(config);
+            
+            if (!tlsValidation.isValid()) {
+                log.warn("TLS/SSL warning: {}", tlsValidation.getErrorMessage());
+                // TLS warning is not fatal, continue
+            }
             
             // Get the appropriate driver
             IDatabaseDriver driver = getDriver(config.getType());
@@ -56,32 +73,41 @@ public class ConnectionManager implements IConnectionManager {
                 return ConnectionResult.builder()
                     .success(false)
                     .errorMessage("Unsupported database type: " + config.getType())
+                    .errorCode("UNSUPPORTED_DB_TYPE")
                     .build();
             }
             
-            // Create connection with timeout
+            // Create connection with timeout and retry logic
             IDatabaseConnection connection = null;
             try {
                 connection = driver.createConnection(config);
                 
-                // Validate connection with timeout
+                // Validate connection with timeout and retry
                 long timeoutSeconds = config.getConnectionTimeoutSeconds();
-                boolean isValid = ConnectionValidator.validateWithTimeout(connection, timeoutSeconds);
+                com.datanymize.database.model.ValidationResult timeoutValidation = 
+                    ConnectionValidator.validateWithTimeout(connection, timeoutSeconds);
                 
-                if (!isValid) {
+                if (!timeoutValidation.isValid()) {
                     return ConnectionResult.builder()
                         .success(false)
-                        .errorMessage("Connection validation failed")
+                        .errorMessage(timeoutValidation.getErrorMessage())
+                        .errorCode(timeoutValidation.getErrorCode())
+                        .errorDetails(timeoutValidation.getSuggestion())
+                        .durationMs(timeoutValidation.getDurationMs())
                         .build();
                 }
                 
                 // Validate read-only access
-                boolean isReadOnly = driver.validateReadOnlyAccess(connection);
-                if (!isReadOnly) {
+                com.datanymize.database.model.ValidationResult readOnlyValidation = 
+                    ConnectionValidator.validateReadOnlyAccess(connection);
+                
+                if (!readOnlyValidation.isValid()) {
                     return ConnectionResult.builder()
                         .success(false)
-                        .errorMessage("Connection does not have read-only access. " +
-                                    "Datanymize requires read-only access to source databases.")
+                        .errorMessage(readOnlyValidation.getErrorMessage())
+                        .errorCode(readOnlyValidation.getErrorCode())
+                        .errorDetails(readOnlyValidation.getSuggestion())
+                        .durationMs(readOnlyValidation.getDurationMs())
                         .build();
                 }
                 
@@ -94,13 +120,15 @@ public class ConnectionManager implements IConnectionManager {
                 return ConnectionResult.builder()
                     .success(true)
                     .message("Connection successful")
+                    .durationMs(timeoutValidation.getDurationMs())
                     .build();
                     
-            } catch (TimeoutException e) {
-                log.warn("Connection timeout: {}", e.getMessage());
+            } catch (Exception e) {
+                log.error("Connection test failed", e);
                 return ConnectionResult.builder()
                     .success(false)
-                    .errorMessage("Connection timeout: " + e.getMessage())
+                    .errorMessage("Connection failed: " + e.getMessage())
+                    .errorCode("CONNECTION_FAILED")
                     .build();
             } finally {
                 if (connection != null) {
@@ -112,17 +140,12 @@ public class ConnectionManager implements IConnectionManager {
                 }
             }
             
-        } catch (IllegalArgumentException e) {
-            log.warn("Invalid connection configuration: {}", e.getMessage());
-            return ConnectionResult.builder()
-                .success(false)
-                .errorMessage("Invalid configuration: " + e.getMessage())
-                .build();
         } catch (Exception e) {
             log.error("Connection test failed", e);
             return ConnectionResult.builder()
                 .success(false)
                 .errorMessage("Connection failed: " + e.getMessage())
+                .errorCode("CONNECTION_ERROR")
                 .build();
         }
     }

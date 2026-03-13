@@ -2,6 +2,9 @@ package com.datanymize.database.connection;
 
 import com.datanymize.database.model.ConnectionConfig;
 import com.datanymize.database.model.DatabaseMetadata;
+import com.datanymize.database.model.Row;
+
+import java.util.List;
 
 /**
  * Interface for database drivers.
@@ -40,4 +43,14 @@ public interface IDatabaseDriver {
      * Drop a schema from the database.
      */
     void dropSchema(IDatabaseConnection conn, String schemaName) throws Exception;
+    
+    /**
+     * Read data from a table with pagination support.
+     */
+    List<Row> readData(IDatabaseConnection conn, String tableName, int limit, int offset) throws Exception;
+    
+    /**
+     * Write data to a table with batch support.
+     */
+    void writeData(IDatabaseConnection conn, String tableName, List<Row> rows) throws Exception;
 }
